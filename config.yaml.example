@@ -1,0 +1,5 @@
+biliconfig:
+  cookie:  SESSDATA=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;
+appconfig:
+  debug: false
+  output: ./
