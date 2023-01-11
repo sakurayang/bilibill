@@ -50,7 +50,7 @@ jobs:
         arch: [32, 64]
         exclude:
           - os: 'darwin'
-          - arch: 32
+            arch: 32
     permissions:
       id-token: write # To sign.
       contents: write # To upload release assets.
