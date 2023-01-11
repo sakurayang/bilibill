@@ -26,7 +26,7 @@ main: ./bilibill.go
 # Binary output name.
 # {{ .Os }} will be replaced by goos field in the config file.
 # {{ .Arch }} will be replaced by goarch field in the config file.
-binary: bilibill-{{ .Os }}-{{ .Arch }}-{{ .Version }}
+binary: bilibill-{{ .Os }}-{{ .Arch }}-{{ .Env.VERSION }}
 
 # (Optional) ldflags generated dynamically in the workflow, and set as the `evaluated-envs` input variables in the workflow.
 ldflags:
