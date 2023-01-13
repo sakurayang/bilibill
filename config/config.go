@@ -8,27 +8,17 @@ import (
 
 var C = DefaultConfig()
 
-type BiliConfig struct {
-	Cookie string `yaml:"cookie"`
-}
-
-type AppConfig struct {
-	Debug  bool   `yaml:"debug"`
-	Output string `yaml:"output"`
-}
-
 type Config struct {
-	BiliConfig *BiliConfig `yaml:"biliconfig"`
-	AppConfig  *AppConfig  `yaml:"appconfig"`
+	Cookie string `yaml:"cookie"`
+	Debug  bool   `yaml:"debug"`
+	Output string `yaml:"output,omitempty"`
 }
 
 func DefaultConfig() *Config {
 	return &Config{
-		BiliConfig: &BiliConfig{Cookie: ""},
-		AppConfig: &AppConfig{
-			Debug:  false,
-			Output: "./",
-		},
+		Cookie: "",
+		Debug:  false,
+		Output: "",
 	}
 }
 
@@ -38,13 +28,7 @@ func GetConfig(path cli.Path) *Config {
 		log.Fatal(err.Error())
 	}
 
-	cfg := &Config{
-		BiliConfig: &BiliConfig{Cookie: ""},
-		AppConfig: &AppConfig{
-			Debug:  false,
-			Output: "./",
-		},
-	}
+	cfg := DefaultConfig()
 	err = c.Get("").Populate(&cfg)
 	if err != nil {
 		log.Fatal(err.Error())

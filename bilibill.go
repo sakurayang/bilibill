@@ -18,6 +18,11 @@ func main() {
 	var outputPath, configPath cli.Path
 	var cookie string
 	var oFormat format.OFormat
+	var debug bool
+
+	if _, err := os.Stat("config.yaml"); err == nil {
+		configPath = "config.yaml"
+	}
 
 	app := &cli.App{
 		Name:    "biliBill",
@@ -80,7 +85,7 @@ func main() {
 			&cli.StringFlag{
 				Name:        "cookie",
 				Usage:       "指定需要使用的 cookie",
-				Required:    true,
+				Required:    len(configPath) == 0,
 				Destination: &cookie,
 				Action: func(context *cli.Context, s string) error {
 					sl := strings.ToUpper(s)
@@ -113,11 +118,29 @@ func main() {
 					return nil
 				},
 			},
+			&cli.BoolFlag{
+				Name:        "debug",
+				Usage:       "是否输出更加详细的信息",
+				Hidden:      true,
+				Value:       false,
+				Destination: &debug,
+			},
 		},
 		Action: func(context *cli.Context) error {
+			_, err := os.Stat("config.yaml")
+			if err != nil || len(configPath) == 0 {
+				return cli.Exit("请编写 config.yaml 或使用 -c <配置文件> 提供配置文件", -1)
+			}
+
 			config.C = config.GetConfig(configPath)
+			if len(config.C.Cookie) == 0 && len(cookie) == 0 {
+				return cli.Exit("请在配置文件中提供 cookie 或使用 --cookie 来提供 cookie", -1)
+			}
+
+			config.C.Debug = debug
+			config.C.Output = outputPath
+
 			var list *biliapi.AllList
-			var err error
 			switch billMode {
 			case format.MonthBill:
 				list, err = biliapi.GetMonthGiftList(date)

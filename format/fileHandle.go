@@ -29,7 +29,7 @@ const (
 
 func GetFileName(mode BillMode, format OFormat, date string) string {
 	var extra string
-	if C.AppConfig.Debug {
+	if C.Debug {
 		extra = "_debug"
 	} else {
 		extra = ""
@@ -58,7 +58,7 @@ func GetFileName(mode BillMode, format OFormat, date string) string {
 }
 
 func getFullPath(name string) string {
-	return path.Join(C.AppConfig.Output, name)
+	return path.Join(C.Output, name)
 }
 
 func isExist(name string) bool {

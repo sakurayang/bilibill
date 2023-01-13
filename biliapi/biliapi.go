@@ -12,8 +12,8 @@ import (
 func getClient() *resty.Client {
 	return resty.New().
 		SetBaseURL("https://api.live.bilibili.com").
-		SetDebug(config.C.AppConfig.Debug).
-		SetHeader("Cookie", config.C.BiliConfig.Cookie)
+		SetDebug(config.C.Debug).
+		SetHeader("Cookie", config.C.Cookie)
 }
 
 func GetGiftTypes() (*[]GiftTypes, error) {
