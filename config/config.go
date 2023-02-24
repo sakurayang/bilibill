@@ -28,11 +28,11 @@ func GetConfig(path cli.Path) *Config {
 		log.Fatal(err.Error())
 	}
 
-	cfg := DefaultConfig()
+	var cfg Config
 	err = c.Get("").Populate(&cfg)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	C = cfg
-	return cfg
+	C = &cfg
+	return &cfg
 }

@@ -42,14 +42,18 @@ func getGiftList(lastId int, date string) (*GiftListResponse, error) {
 	if err != nil {
 		return &GiftListResponse{}, err
 	}
+
+	query := map[string]string{
+		"limit":      "100",
+		"coin_type":  "0",
+		"begin_time": fmt.Sprintf("%04d-%02d-%02d", t.Year(), t.Month(), t.Day()),
+	}
+	if lastId != -1 {
+		query["last_id"] = strconv.Itoa(lastId)
+	}
 	res, err := getClient().R().
 		SetResult(GiftListResponse{}).
-		SetQueryParams(map[string]string{
-			"limit":      "100",
-			"coin_type":  "0",
-			"begin_time": fmt.Sprintf("%04d-%02d-%02d", t.Year(), t.Month(), t.Day()),
-			"last_id":    strconv.Itoa(lastId),
-		}).
+		SetQueryParams(query).
 		Get("/xlive/revenue/v1/giftStream/getReceivedGiftStreamNextList")
 
 	if err != nil {
@@ -74,7 +78,7 @@ func GetDailyGiftList(date string) (*AllList, error) {
 	var allList AllList
 
 	flag := true
-	lastId := 0
+	lastId := -1
 
 	for flag {
 		result, err := getGiftList(lastId, date)
@@ -105,14 +109,15 @@ func GetMonthGiftList(date string) (*AllList, error) {
 		return &AllList{}, err
 	}
 	day := t.Day()
+	new_t := t.Add(-time.Hour * 24 * time.Duration(day-1))
 	for i := 1; i <= day; i++ {
-		l, err := GetDailyGiftList(t.Format("2006-01-02 15:04:05"))
+		l, err := GetDailyGiftList(new_t.Format("2006-01-02 15:04:05"))
 		if err != nil {
 			return &allList, err
 		}
 		allList.TotalHamster += l.TotalHamster
 		list = append(list, *l.List...)
-		t.Add(time.Hour * 24)
+		new_t = new_t.Add(time.Hour * 24)
 	}
 	allList.List = &list
 	return &allList, nil
